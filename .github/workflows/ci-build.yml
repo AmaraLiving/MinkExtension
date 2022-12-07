@@ -28,14 +28,14 @@ jobs:
           - 8.0
           - 8.1
           - 8.2
-        dev-deps: 0
+        dev-deps: ["0"]
         include:
           - php-version: 7.2
             symfony-version: ^2
           - php-version: 7.2
             symfony-version: ^3
           - php-version: 7.2
-            dev-deps: 1
+            dev-deps: "1"
 
     steps:
       - uses: actions/checkout@v3
