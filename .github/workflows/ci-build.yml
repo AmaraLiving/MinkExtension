@@ -23,11 +23,11 @@ jobs:
           - 7.0
           - 7.1
           - 7.2
-          - 7.3
-          - 7.4
-          - 8.0
-          - 8.1
-          - 8.2
+          # - 7.3
+          # - 7.4
+          # - 8.0
+          # - 8.1
+          # - 8.2
         dev-deps: ["0"]
         include:
           - php-version: 7.2
@@ -47,7 +47,7 @@ jobs:
         if: ${{ matrix.symfony-version }}
         run: composer require --no-update symfony/lts=${{ matrix.symfony-version }}
       - name: Install with dev dependencies
-        if: ${{ matrix.dev-deps }}
+        if: ${{ matrix.dev-deps == "1" }}
         run: composer config minimum-stability dev
       - name: Prepare composer cache
         id: composer-cache
