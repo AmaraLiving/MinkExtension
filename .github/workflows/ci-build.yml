@@ -22,16 +22,17 @@ jobs:
           - 5.6
           - 7.0
           - 7.1
-          - 7.2
           - 7.3
-        dev-deps: ["0"]
+        dev-deps: [""]
+        symfony-version: [""]
         include:
           - php-version: 7.2
-            symfony-version: ^2
           - php-version: 7.2
             symfony-version: ^3
           - php-version: 7.2
-            dev-deps: "1"
+            symfony-version: ^2
+          - php-version: 7.2
+            dev-deps: "dev"
 
     steps:
       - uses: actions/checkout@v3
@@ -44,7 +45,7 @@ jobs:
         if: ${{ matrix.symfony-version }}
         run: composer require --no-update symfony/lts=${{ matrix.symfony-version }}
       - name: Install with dev dependencies
-        if: ${{ matrix.dev-deps == '1' }}
+        if: ${{ matrix.dev-deps == 'dev' }}
         run: composer config minimum-stability dev
       - name: Prepare composer cache
         id: composer-cache
