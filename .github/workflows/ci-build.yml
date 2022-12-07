@@ -1,0 +1,67 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        php-version:
+          - 5.3
+          - 5.4
+          - 5.5
+          - 5.6
+          - 7.0
+          - 7.1
+          - 7.3
+        dev-deps: [""]
+        symfony-version: [""]
+        include:
+          - php-version: 7.2
+          - php-version: 7.2
+            symfony-version: ^3
+          - php-version: 7.2
+            symfony-version: ^2
+          - php-version: 7.2
+            dev-deps: "dev"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Setup PHP ${{ matrix.php-version }}"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+      - name: Install with Symfony ${{ matrix.symfony-version }}
+        if: ${{ matrix.symfony-version }}
+        run: composer require --no-update symfony/lts=${{ matrix.symfony-version }}
+      - name: Install with dev dependencies
+        if: ${{ matrix.dev-deps == 'dev' }}
+        run: composer config minimum-stability dev
+      - name: Prepare composer cache
+        id: composer-cache
+        run: |
+          COMPOSER_CACHE_DIR=$(composer config cache-files-dir)
+          mkdir -p ${COMPOSER_CACHE_DIR}
+          echo "dir=${COMPOSER_CACHE_DIR}" >> ${GITHUB_OUTPUT}
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-${{ matrix.php-version }}
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-source
+      - name: Run phpspec
+        run: vendor/bin/phpspec run -f pretty
+      - name: Run behat
+        run: vendor/bin/behat -fprogress --strict
