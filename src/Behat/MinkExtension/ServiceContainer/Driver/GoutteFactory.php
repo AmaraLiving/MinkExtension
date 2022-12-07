@@ -127,6 +127,11 @@ class GoutteFactory implements DriverFactory
         return false;
     }
 
+    private function isGoutte4()
+    {
+        return !method_exists('Goutte\\Client', 'setClient');
+    }
+
     private function isGuzzle6()
     {
         return interface_exists('GuzzleHttp\ClientInterface') &&
