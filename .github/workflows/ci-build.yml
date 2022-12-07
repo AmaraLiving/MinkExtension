@@ -47,7 +47,7 @@ jobs:
         if: ${{ matrix.symfony-version }}
         run: composer require --no-update symfony/lts=${{ matrix.symfony-version }}
       - name: Install with dev dependencies
-        if: ${{ matrix.dev-deps == "1" }}
+        if: ${{ matrix.dev-deps == '1' }}
         run: composer config minimum-stability dev
       - name: Prepare composer cache
         id: composer-cache
