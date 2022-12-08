@@ -70,7 +70,7 @@ class GoutteFactory implements DriverFactory
 
         if ($this->isGoutte4()) {
             $clientDefinition = new Definition('Behat\Mink\Driver\Goutte\Client');
-            $clientDefinition->addMethodCall('setServerParameters', $config['server_parameters']);
+            $clientDefinition->addMethodCall('setServerParameters', array($config['server_parameters']));
 
             // Goutte 4 doesn't use Guzzle
             return new Definition(
