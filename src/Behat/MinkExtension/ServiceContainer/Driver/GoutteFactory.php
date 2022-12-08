@@ -71,10 +71,13 @@ class GoutteFactory implements DriverFactory
         if ($this->isGoutte1()) {
             $guzzleClient = $this->buildGuzzle3Client($config['guzzle_parameters']);
         } elseif ($this->isGoutte4()) {
+            $clientDefinition = new Definition('Behat\Mink\Driver\Goutte\Client');
+            $clientDefinition->addMethodCall('setServerParameters', $config['server_parameters']);
+
             // Goutte 4 doesn't use Guzzle
             return new Definition(
                 'Behat\Mink\Driver\GoutteDriver',
-                array(new Definition('Behat\Mink\Driver\Goutte\Client'))
+                array($clientDefinition)
             );
         } elseif ($this->isGuzzle6()) {
             $guzzleClient = $this->buildGuzzle6Client($config['guzzle_parameters']);
